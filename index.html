@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>中国TOP20博物馆·全景导览 | 地图与宝藏</title>
+    <!-- 引入Font Awesome 6 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- 引入 Leaflet 地图库 (轻量开源地图) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Noto Sans', system-ui, -apple-system, 'Microsoft YaHei', sans-serif;
+            background: #f5f2eb;
+            color: #2c2b28;
+            scroll-behavior: smooth;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* 头部区域 */
+        .hero {
+            text-align: center;
+            padding: 2rem 1rem 2.5rem;
+            background: linear-gradient(135deg, #1e2a3a 0%, #0f1a24 100%);
+            border-radius: 2rem;
+            margin-bottom: 2rem;
+            color: #f0ede8;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        .hero h1 {
+            font-size: 2.4rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .hero h1 i {
+            color: #e3b23c;
+            margin-right: 10px;
+        }
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.85;
+        }
+        .stats-badge {
+            display: inline-block;
+            background: rgba(255,255,240,0.15);
+            backdrop-filter: blur(4px);
+            border-radius: 40px;
+            padding: 0.4rem 1.2rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* 双栏核心布局: 左侧地图 + 右侧导航/索引 */
+        .explore-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 1.8rem;
+            margin-bottom: 2.5rem;
+        }
+        /* 地图容器 */
+        .map-container {
+            background: #dad2c4;
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border: 1px solid #e9e2d6;
+            position: relative;
+            height: 480px;
+        }
+        #museumMap {
+            width: 100%;
+            height: 100%;
+            background: #cfc9bf;
+        }
+        /* 右侧博物馆快速列表 (配合地图联动) */
+        .map-sidebar {
+            background: white;
+            border-radius: 1.8rem;
+            padding: 1.2rem 0.8rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #eee6dd;
+            display: flex;
+            flex-direction: column;
+            height: 480px;
+            overflow-y: auto;
+        }
+        .map-sidebar h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            padding-left: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #2a4858;
+            border-left: 4px solid #e3b23c;
+        }
+        .museum-mini-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .museum-mini-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 50px;
+            background: #fefcf9;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #f0e7dd;
+            font-size: 0.9rem;
+        }
+        .museum-mini-item:hover {
+            background: #e3b23c20;
+            border-color: #e3b23c;
+            transform: translateX(4px);
+        }
+        .museum-mini-item i {
+            color: #b8872e;
+            width: 24px;
+        }
+        .museum-mini-item .city-badge {
+            font-size: 0.7rem;
+            background: #e9dfd1;
+            padding: 2px 8px;
+            border-radius: 30px;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+        .active-marker-mini {
+            background: #e3b23c30;
+            border-left: 3px solid #e3b23c;
+        }
+
+        /* 快速导航 (博物馆图标快速跳转) */
+        .nav-filter {
+            background: rgba(255,255,245,0.96);
+            border-radius: 60px;
+            padding: 0.6rem 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            border: 1px solid #e9e2d6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .nav-btn {
+            background: transparent;
+            border: none;
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #4a4a46;
+        }
+        .nav-btn:hover {
+            background: #e3b23c;
+            color: #1e2a3a;
+        }
+        .nav-btn i {
+            margin-right: 6px;
+        }
+
+        /* 博物馆卡片区 */
+        .museum-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2.2rem;
+        }
+        .museum-card {
+            background: white;
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+            transition: all 0.25s ease;
+            border: 1px solid #eee6dd;
+            scroll-margin-top: 90px;
+        }
+        .museum-card:hover {
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+        }
+        .card-header {
+            background: linear-gradient(98deg, #fefaf5 0%, #f9f3ea 100%);
+            padding: 1.2rem 1.8rem;
+            border-bottom: 2px solid #e3b23c;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .museum-name {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #2d2a24;
+        }
+        .museum-name small {
+            font-size: 0.85rem;
+            background: #e3b23c20;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            margin-left: 12px;
+            color: #7a5a2a;
+        }
+        .rank {
+            background: #1e2a3a;
+            color: #e3b23c;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .card-body {
+            display: grid;
+            grid-template-columns: 1fr 0.9fr;
+            gap: 1.8rem;
+            padding: 1.8rem;
+        }
+        .left-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        .info-section {
+            background: #fefcf9;
+            border-radius: 1.2rem;
+            padding: 1rem 1.2rem;
+            border-left: 4px solid #e3b23c;
+        }
+        .info-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #2a4858;
+        }
+        .treasures {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .treasure-item {
+            background: white;
+            border-radius: 60px;
+            padding: 0.3rem 1rem 0.3rem 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #efe0d0;
+            font-size: 0.9rem;
+        }
+        .btn-reserve {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #1e2a3a;
+            color: white;
+            padding: 0.7rem 1.4rem;
+            border-radius: 48px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .btn-reserve:hover {
+            background: #e3b23c;
+            color: #1e2a3a;
+        }
+        .right-info {
+            background: #faf7f2;
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .detail-row {
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-start;
+            border-bottom: 1px dashed #e0d6ca;
+            padding-bottom: 0.8rem;
+        }
+        .detail-icon {
+            width: 32px;
+            color: #b17e38;
+            text-align: center;
+        }
+        .best-time {
+            background: #e9dfd1;
+            border-radius: 20px;
+            padding: 0.2rem 0.8rem;
+            display: inline-block;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            border-top: 1px solid #e1dacf;
+            color: #6b6256;
+            font-size: 0.85rem;
+        }
+        .back2top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e2a3a;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0.7;
+            z-index: 99;
+        }
+        @media (max-width: 980px) {
+            .explore-layout {
+                grid-template-columns: 1fr;
+            }
+            .map-sidebar, .map-container { height: 400px; }
+            .card-body { grid-template-columns: 1fr; }
+            .museum-name { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="hero">
+        <h1><i class="fas fa-map-marked-alt"></i> 华夏宝藏·TOP20博物馆</h1>
+        <p>地图导览 | 镇馆之宝 | 独家路线 | 最佳时节 | 一键预约</p>
+        <div class="stats-badge"><i class="fas fa-globe-asia"></i> 2026 地图版 | 指尖触摸千年文脉</div>
+    </div>
+
+    <!-- 地图 + 快捷侧边栏区域 -->
+    <div class="explore-layout">
+        <div class="map-container">
+            <div id="museumMap"></div>
+        </div>
+        <div class="map-sidebar">
+            <h3><i class="fas fa-location-dot"></i> 博物馆地图索引</h3>
+            <div class="museum-mini-list" id="miniListPanel">
+                <!-- 动态生成博物馆快捷条目 -->
+            </div>
+            <div style="margin-top:12px; font-size:0.7rem; text-align:center; color:#9b8e7a;">
+                <i class="fas fa-mouse-pointer"></i> 点击地名可定位并高亮卡片
+            </div>
+        </div>
+    </div>
+
+    <!-- 快速导航（博物馆卡片快速跳转） -->
+    <div class="nav-filter" id="quickNav"></div>
+
+    <!-- 博物馆详细卡片列表 -->
+    <div class="museum-grid" id="museumList"></div>
+    <footer>
+        <i class="fas fa-map-marked-alt"></i> 地图数据 © OpenStreetMap | 坐标仅供参考，部分博物馆基于城市中心标注。<br>
+        让每一次出发，都赴一场五千年之约。
+    </footer>
+</div>
+<div class="back2top" id="back2topBtn"><i class="fas fa-arrow-up"></i></div>
+
+<script>
+    // ---------- 博物馆数据集 (增加精确坐标便于地图展示) ----------
+    const museumsData = [
+        { id: 1, name: "故宫博物院", nameEn: "Palace Museum", rank: "Top1 全球·必览", city: "北京", lat: 39.9163, lng: 116.3971,
+          treasures: ["《清明上河图》", "大禹治水图玉山", "金瓯永固杯", "太和殿屋脊兽原件"],
+          route: "午门→太和殿→珍宝馆→钟表馆→东六宫→神武门 (约4h精华线)", bestTime: "10月下旬-11月上旬（秋色金黄）或 雪后初晴", 
+          address: "北京市东城区景山前街4号", reserveLink: "https://booking.dpm.org.cn/", desc: "世界文化遗产，明清两代皇家宫殿。", subway: "地铁1号线天安门东站" },
+        { id: 2, name: "中国国家博物馆", nameEn: "National Museum of China", rank: "Top6 全球·国博", city: "北京", lat: 39.9037, lng: 116.3955,
+          treasures: ["后母戊鼎", "四羊方尊", "三星堆青铜面具", "明孝端皇后凤冠"],
+          route: "古代中国基本陈列→复兴之路→佛造像展", bestTime: "四季皆宜，工作日早晨最佳",
+          address: "北京市东城区东长安街16号", reserveLink: "https://www.chnmuseum.cn/", desc: "国家最高历史文化艺术殿堂。", subway: "地铁1号线天安门东站" },
+        { id: 3, name: "秦始皇帝陵博物院", nameEn: "Emperor Qinshihuang's Mausoleum", rank: "Top3 全球·秦兵马俑", city: "西安", lat: 34.3849, lng: 109.2734,
+          treasures: ["一号坑陶俑军阵", "铜车马", "百戏俑", "石铠甲"],
+          route: "一号坑→三号坑→二号坑→文物陈列厅", bestTime: "3-5月/9-11月",
+          address: "西安市临潼区秦陵北路", reserveLink: "https://www.bmy.com.cn/", desc: "世界第八大奇迹。", subway: "地铁9号线秦陵西站" },
+        { id: 4, name: "陕西历史博物馆", nameEn: "Shaanxi History Museum", rank: "Top19 亚太", city: "西安", lat: 34.2268, lng: 108.9467,
+          treasures: ["镶金兽首玛瑙杯", "舞马衔杯纹银壶", "皇后玉玺", "鸳鸯莲瓣纹金碗"],
+          route: "基本陈列（周秦汉唐）→大唐遗宝展", bestTime: "冬季淡季或初春",
+          address: "西安市雁塔区小寨东路91号", reserveLink: "https://www.sxhm.com/", desc: "华夏宝库，周秦汉唐文物精华。", subway: "地铁2/3号线小寨站" },
+        { id: 5, name: "上海博物馆", nameEn: "Shanghai Museum", rank: "TOP20", city: "上海", lat: 31.2304, lng: 121.4737,
+          treasures: ["大克鼎", "商鞅方升", "王羲之《上虞帖》", "缂丝莲塘乳鸭图"],
+          route: "青铜馆→陶瓷馆→书法绘画馆", best
