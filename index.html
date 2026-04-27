@@ -2,9 +2,11 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>中国TOP20博物馆·全景导览 | 探秘国家宝藏</title>
-    <!-- 引入Font Awesome 6 (免费图标库) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>万水千山走遍 · 中国TOP20博物馆导览</title>
+    <!-- 使用简洁的现代字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (免费图标库) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -14,562 +16,441 @@
         }
 
         body {
-            font-family: 'Segoe UI', 'Roboto', 'Noto Sans', system-ui, -apple-system, 'Microsoft YaHei', sans-serif;
-            background: #f5f2eb;  /* 暖灰基底，像古画宣纸色 */
-            color: #2c2b28;
-            scroll-behavior: smooth;
+            font-family: 'Inter', sans-serif;
+            background-color: #FCF9F2;  /* 米白基调 */
+            color: #1E2A2B;
             line-height: 1.5;
         }
 
-        /* 主容器 */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1.5rem;
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #E8E0D3;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #7F8C6D;
+            border-radius: 8px;
         }
 
-        /* 头部区域 */
+        /* 全局容器 */
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px 48px;
+        }
+
+        /* Hero Banner 渐变+纹理 */
         .hero {
-            text-align: center;
-            padding: 2rem 1rem 2.5rem;
-            background: linear-gradient(135deg, #1e2a3a 0%, #0f1a24 100%);
+            background: linear-gradient(135deg, #2B3B2C 0%, #1D2A1A 100%);
             border-radius: 2rem;
-            margin-bottom: 2rem;
-            color: #f0ede8;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            padding: 2.5rem 2rem;
+            margin: 2rem 0 2rem 0;
+            color: #FDF7E8;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255,215,150,0.08) 2%, transparent 2.5%);
+            background-size: 28px 28px;
+            pointer-events: none;
         }
         .hero h1 {
-            font-size: 2.4rem;
-            letter-spacing: 2px;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
+            font-size: 2.6rem;
+            letter-spacing: -0.02em;
+            font-weight: 700;
         }
         .hero h1 i {
-            color: #e3b23c;
-            margin-right: 10px;
+            color: #E6C388;
+            margin-right: 12px;
         }
         .hero p {
             font-size: 1.1rem;
             opacity: 0.85;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        .stats-badge {
-            display: inline-block;
-            background: rgba(255,255,240,0.15);
-            backdrop-filter: blur(4px);
-            border-radius: 40px;
-            padding: 0.4rem 1.2rem;
-            margin-top: 1rem;
-            font-size: 0.85rem;
+            max-width: 600px;
+            margin-top: 0.6rem;
         }
 
-        /* 快速导航 (快速跳转按钮) */
-        .nav-filter {
-            background: white;
-            border-radius: 60px;
-            padding: 0.6rem 1rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        /* 统计卡片 */
+        .stats-grid {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.5rem;
-            position: sticky;
-            top: 10px;
-            z-index: 100;
-            backdrop-filter: blur(12px);
-            background: rgba(255,255,245,0.95);
-            border: 1px solid #e9e2d6;
+            gap: 1.2rem;
+            margin: 1.5rem 0 2rem;
         }
-        .nav-btn {
-            background: transparent;
-            border: none;
-            padding: 0.4rem 1rem;
-            font-size: 0.85rem;
-            font-weight: 500;
-            border-radius: 40px;
-            cursor: pointer;
+        .stat-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.2rem 1.8rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #EBE3D6;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
             transition: all 0.2s;
-            color: #4a4a46;
-            font-family: inherit;
         }
-        .nav-btn:hover {
-            background: #e3b23c;
-            color: #1e2a3a;
+        .stat-card .number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #2B5E2F;
         }
-        .nav-btn i {
-            margin-right: 6px;
-            font-size: 0.8rem;
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: #5F6C5B;
+            letter-spacing: 0.3px;
         }
 
-        /* 博物馆卡片网格 */
-        .museum-grid {
+        /* 工具栏 */
+        .toolbar {
             display: flex;
-            flex-direction: column;
-            gap: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            border: 1px solid #ECE4D8;
+        }
+        .search-box {
+            flex: 2;
+            min-width: 200px;
+            background: #F6F3ED;
+            border-radius: 3rem;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .search-box i {
+            color: #9B8E7B;
+        }
+        .search-box input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            align-items: center;
+        }
+        select, .view-toggle button {
+            background: #F6F3ED;
+            border: 1px solid #DDD2C2;
+            padding: 0.5rem 0.9rem;
+            border-radius: 2rem;
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .view-toggle button {
+            background: white;
+        }
+        .view-toggle .active {
+            background: #2B5E2F;
+            border-color: #2B5E2F;
+            color: white;
+        }
+        button {
+            background: none;
+            border: none;
         }
 
-        /* 每个博物馆独立卡片 */
+        /* 卡片网格 & 表格 */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2rem;
+        }
         .museum-card {
-            background: #ffffff;
-            border-radius: 2rem;
+            background: white;
+            border-radius: 1.5rem;
             overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
             transition: all 0.25s ease;
-            border: 1px solid #eee6dd;
-            scroll-margin-top: 90px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+            border: 1px solid #EDE5DA;
+            cursor: pointer;
         }
         .museum-card:hover {
-            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
-            transform: translateY(-3px);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 28px -12px rgba(0,0,0,0.12);
+            border-color: #DCCFBE;
         }
-
-        /* 卡片头部: 馆名与排名 */
-        .card-header {
-            background: linear-gradient(98deg, #fefaf5 0%, #f9f3ea 100%);
-            padding: 1.2rem 1.8rem;
-            border-bottom: 2px solid #e3b23c;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: baseline;
+        .card-content {
+            padding: 1.2rem 1.2rem 1.5rem;
         }
-        .museum-name {
-            font-size: 1.7rem;
+        .card-title {
+            font-size: 1.3rem;
             font-weight: 700;
-            color: #2d2a24;
-            letter-spacing: -0.3px;
-        }
-        .museum-name small {
-            font-size: 0.85rem;
-            font-weight: normal;
-            background: #e3b23c20;
-            padding: 0.2rem 0.7rem;
-            border-radius: 30px;
-            margin-left: 12px;
-            color: #7a5a2a;
-        }
-        .rank {
-            background: #1e2a3a;
-            color: #e3b23c;
-            padding: 0.3rem 1rem;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        /* 内容主体 两列布局 */
-        .card-body {
-            display: grid;
-            grid-template-columns: 1fr 0.9fr;
-            gap: 1.8rem;
-            padding: 1.8rem;
-        }
-
-        /* 左侧区域 */
-        .left-info {
             display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
+            justify-content: space-between;
         }
-        .info-section {
-            background: #fefcf9;
-            border-radius: 1.2rem;
-            padding: 1rem 1.2rem;
-            border-left: 4px solid #e3b23c;
+        .heart {
+            color: #C0A080;
+            cursor: pointer;
+            transition: 0.1s;
         }
-        .info-section h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.7rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #2a4858;
+        .heart.active {
+            color: #E35F5F;
         }
-        .info-section h3 i {
-            color: #b8872e;
-            width: 1.6rem;
+        .city-badge {
+            font-size: 0.75rem;
+            background: #EFE6DC;
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 2rem;
+            margin: 0.6rem 0;
         }
-        .treasures {
+        .info-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.8rem;
-            margin-top: 0.5rem;
+            gap: 0.5rem;
+            margin-top: 0.6rem;
+            font-size: 0.8rem;
+            color: #5C6E4A;
         }
-        .treasure-item {
+        .treasure {
+            background: #FDF6E3;
+            border-radius: 1rem;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
+            margin-top: 0.8rem;
+        }
+        /* 表格样式 */
+        .table-view {
             background: white;
-            border-radius: 60px;
-            padding: 0.3rem 1rem 0.3rem 0.7rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            border: 1px solid #efe0d0;
-            font-size: 0.9rem;
+            border-radius: 1.5rem;
+            overflow-x: auto;
+            border: 1px solid #EDE5DA;
         }
-        .treasure-item i {
-            font-size: 1rem;
-            color: #c9852b;
-        }
-        .route-text, .desc-text {
-            font-size: 0.95rem;
-            color: #3e3c38;
-            line-height: 1.5;
-        }
-        .btn-reserve {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #1e2a3a;
-            color: white;
-            padding: 0.7rem 1.4rem;
-            border-radius: 48px;
-            text-decoration: none;
-            font-weight: 500;
-            margin-top: 0.5rem;
-            transition: 0.2s;
-            font-size: 0.9rem;
-        }
-        .btn-reserve:hover {
-            background: #e3b23c;
-            color: #1e2a3a;
-        }
-
-        /* 右侧区域 */
-        .right-info {
-            background: #faf7f2;
-            border-radius: 1.2rem;
-            padding: 1.2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .detail-row {
-            display: flex;
-            gap: 0.8rem;
-            align-items: flex-start;
-            border-bottom: 1px dashed #e0d6ca;
-            padding-bottom: 0.8rem;
-        }
-        .detail-icon {
-            width: 32px;
-            color: #b17e38;
-            text-align: center;
-            font-size: 1.2rem;
-        }
-        .detail-content {
-            flex: 1;
-            font-size: 0.92rem;
-        }
-        .detail-content strong {
-            display: block;
-            font-size: 0.8rem;
-            color: #8e7a62;
-            margin-bottom: 3px;
-        }
-        .best-time {
-            background: #e9dfd1;
-            border-radius: 20px;
-            padding: 0.2rem 0.8rem;
-            display: inline-block;
+        .table-view table {
+            width: 100%;
+            border-collapse: collapse;
             font-size: 0.85rem;
         }
-        .city-tag {
-            background: #e3b23c20;
-            border-radius: 20px;
-            padding: 0.2rem 0.8rem;
-            font-size: 0.8rem;
-            display: inline-block;
-            margin-left: 8px;
-            color: #8a6a2e;
+        .table-view th, .table-view td {
+            text-align: left;
+            padding: 1rem 0.8rem;
+            border-bottom: 1px solid #F0E8DE;
         }
-
-        @media (max-width: 880px) {
-            .card-body {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            .museum-name {
-                font-size: 1.3rem;
-            }
-            .container {
-                padding: 1rem;
-            }
-            .hero h1 {
-                font-size: 1.8rem;
-            }
+        .table-view th {
+            background: #F7F3EC;
+            font-weight: 600;
         }
-
-        footer {
-            text-align: center;
-            margin-top: 3rem;
-            padding: 2rem;
-            border-top: 1px solid #e1dacf;
-            color: #6b6256;
-            font-size: 0.85rem;
-        }
-        .back2top {
+        /* 弹窗模态框 */
+        .modal-overlay {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #1e2a3a;
-            color: white;
-            width: 44px;
-            height: 44px;
-            border-radius: 30px;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            max-width: 750px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 2rem;
+            padding: 1.8rem;
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            opacity: 0.7;
-            transition: 0.2s;
-            z-index: 99;
         }
-        .back2top:hover {
-            opacity: 1;
-            background: #e3b23c;
-            color: #1e2a3a;
+        .route-section {
+            background: #F3EFE8;
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            margin: 1.8rem 0;
         }
-        /* 加载提示 */
-        .loading {
+        .route-badge {
+            background: #2B5E2F;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 2rem;
+            display: inline-block;
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 700px) {
+            .app-container { padding: 0 16px 32px; }
+            .hero h1 { font-size: 1.8rem; }
+            .toolbar { flex-direction: column; align-items: stretch; }
+        }
+        button, .museum-card, .stat-card {
+            user-select: none;
+        }
+        footer {
+            margin-top: 2rem;
             text-align: center;
-            padding: 3rem;
-            color: #8e7a62;
+            font-size: 0.7rem;
+            color: #968B78;
+            border-top: 1px solid #E2D9CE;
+            padding-top: 2rem;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="hero">
-        <h1><i class="fas fa-landmark"></i> 华夏宝藏·TOP20博物馆</h1>
-        <p>一站式阅览：镇馆之宝 · 独家路线 · 最佳时节 · 一键预约</p>
-        <div class="stats-badge"><i class="fas fa-ticket-alt"></i> 2026 年度臻选 | 国家文化客厅</div>
-    </div>
+<div id="root"></div>
 
-    <!-- 快速导航（动态js生成跳转按钮） -->
-    <div class="nav-filter" id="quickNav"></div>
+<script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/babel-standalone@6.26.0/babel.min.js"></script>
 
-    <!-- 博物馆列表渲染区 -->
-    <div class="museum-grid" id="museumList"></div>
-    <footer>
-        <i class="fas fa-map-marked-alt"></i> 数据依据：携程口碑榜“国内博物馆20佳”及2024全球参观量权威排行 | 参观信息仅供参考，请以各馆官方最新公告为准。<br>
-        让每一次出发，都赴一场五千年之约。
-    </footer>
-</div>
-<div class="back2top" id="back2topBtn"><i class="fas fa-arrow-up"></i></div>
-
-<script>
-    // ---------- 中国TOP20博物馆数据集 ----------
-    // 完整20个博物馆信息，确保每个字段都有数据
+<script type="text/babel">
+    // --------------------------------------------- 示例数据 (20条完整博物馆记录)
     const museumsData = [
-        { id: 1, name: "故宫博物院", nameEn: "Palace Museum", rank: "Top1 全球·必览", city: "北京",
-          treasures: ["《清明上河图》", "大禹治水图玉山", "金瓯永固杯", "太和殿屋脊兽原件"],
-          route: "午门→太和殿→珍宝馆→钟表馆→东六宫→神武门 (约4h精华线)", bestTime: "10月下旬-11月上旬（秋色金黄）或雪后初晴", 
-          address: "北京市东城区景山前街4号", reserveLink: "https://booking.dpm.org.cn/", desc: "世界文化遗产，明清两代皇家宫殿，中国古代建筑与文物之巅。",
-          subway: "地铁1号线天安门东站/天安门西站" },
-        { id: 2, name: "中国国家博物馆", nameEn: "National Museum of China", rank: "Top6 全球·国博", city: "北京",
-          treasures: ["后母戊鼎", "四羊方尊", "三星堆青铜面具", "明孝端皇后凤冠"],
-          route: "古代中国基本陈列（地下一层）→复兴之路→佛造像展→国博咖啡厅", bestTime: "四季皆宜，工作日早晨最佳",
-          address: "北京市东城区东长安街16号", reserveLink: "https://www.chnmuseum.cn/", desc: "国家最高历史文化艺术殿堂，藏品超140万件。",
-          subway: "地铁1号线天安门东站C/D口" },
-        { id: 3, name: "秦始皇帝陵博物院", nameEn: "Emperor Qinshihuang's Mausoleum", rank: "Top3 全球·秦兵马俑", city: "西安",
-          treasures: ["一号坑陶俑军阵", "铜车马", "百戏俑", "石铠甲"],
-          route: "一号坑→三号坑→二号坑→文物陈列厅→铜车马展厅", bestTime: "3-5月/9-11月（避开暑期人流）",
-          address: "西安市临潼区秦陵北路", reserveLink: "https://www.bmy.com.cn/", desc: "世界第八大奇迹，两千年前的地下帝国卫队。",
-          subway: "地铁9号线秦陵西站换乘公交" },
-        { id: 4, name: "陕西历史博物馆", nameEn: "Shaanxi History Museum", rank: "Top19 亚太", city: "西安",
-          treasures: ["镶金兽首玛瑙杯", "舞马衔杯纹银壶", "皇后玉玺", "鸳鸯莲瓣纹金碗"],
-          route: "基本陈列（周秦汉唐）→大唐遗宝展→壁画馆", bestTime: "冬季淡季或初春，周三夜场有时开放",
-          address: "西安市雁塔区小寨东路91号", reserveLink: "https://www.sxhm.com/", desc: "华夏宝库，周秦汉唐文物精华。",
-          subway: "地铁2/3号线小寨站" },
-        { id: 5, name: "上海博物馆", nameEn: "Shanghai Museum", rank: "TOP20 全球", city: "上海",
-          treasures: ["大克鼎", "商鞅方升", "王羲之《上虞帖》", "缂丝莲塘乳鸭图"],
-          route: "青铜馆→陶瓷馆→书法绘画馆→钱币馆→玉器馆", bestTime: "全年恒温，避开周末下午",
-          address: "上海市黄浦区人民大道201号", reserveLink: "https://www.shanghaimuseum.net/", desc: "青铜器与书画收藏享誉海内外。",
-          subway: "地铁1/2/8号线人民广场站" },
-        { id: 6, name: "南京博物院", nameEn: "Nanjing Museum", rank: "Top13 全球(2024)", city: "南京",
-          treasures: ["西汉金兽", "竹林七贤砖画", "大报恩寺琉璃塔拱门", "明釉里红岁寒三友梅瓶"],
-          route: "历史馆→特展馆→数字馆→民国馆→艺术馆", bestTime: "3-4月（玉兰花开）或深秋",
-          address: "南京市玄武区中山东路321号", reserveLink: "https://www.njmuseum.com/", desc: "第一座国家投资兴建大型综合博物馆，江南文化核心。",
-          subway: "地铁2号线明故宫站" },
-        { id: 7, name: "苏州博物馆", nameEn: "Suzhou Museum", rank: "Top17 全球", city: "苏州",
-          treasures: ["秘色瓷莲花碗", "真珠舍利宝幢", "吴王夫差剑", "《七君子图》"],
-          route: "本馆(贝聿铭建筑)→忠王府→西馆(国际交流)", bestTime: "春秋两季，雨后园林意境最佳",
-          address: "苏州市姑苏区东北街204号", reserveLink: "https://www.szmuseum.com/", desc: "贝聿铭封山之作，江南雅韵与现代美学融合。",
-          subway: "地铁4号线北寺塔站" },
-        { id: 8, name: "湖北省博物馆", nameEn: "Hubei Provincial Museum", rank: "Top19 全球", city: "武汉",
-          treasures: ["越王勾践剑", "曾侯乙编钟", "云梦睡虎地秦简", "元青花四爱梅瓶"],
-          route: "曾侯乙展厅→越王勾践剑展厅→楚国八百年→梁庄王珍藏", bestTime: "深秋或初春，编钟演出不容错过",
-          address: "武汉市武昌区东湖路160号", reserveLink: "https://www.hbww.org/", desc: "荆楚文化圣地，震撼礼乐文明。",
-          subway: "地铁8号线省博湖北日报站" },
-        { id: 9, name: "湖南博物院", nameEn: "Hunan Museum", rank: "Top20 全球", city: "长沙",
-          treasures: ["马王堆汉墓T形帛画", "素纱襌衣", "辛追夫人遗体", "商代象尊"],
-          route: "长沙马王堆汉墓陈列→湖南人→青铜器馆→瓷器馆", bestTime: "四季均可，夏季空调充足",
-          address: "长沙市开福区东风路50号", reserveLink: "https://www.hnmuseum.com/", desc: "马王堆汉墓举世闻名，一窥汉代贵族生活。",
-          subway: "地铁6号线省博物馆站" },
-        { id: 10, name: "河南博物院", nameEn: "Henan Museum", rank: "中原明珠", city: "郑州",
-          treasures: ["贾湖骨笛", "妇好鸮尊", "云纹铜禁", "武则天金简"],
-          route: "新石器→夏商→西周→东周→秦汉魏晋→唐宋", bestTime: "4-5月及9-10月，华夏古乐演出推荐",
-          address: "郑州市金水区农业路8号", reserveLink: "https://www.chnmus.net/", desc: "一部河南史，半部华夏册，九大镇馆之宝震撼。",
-          subway: "地铁2号线关虎屯站" },
-        { id: 11, name: "成都博物馆", nameEn: "Chengdu Museum", rank: "新一线顶流", city: "成都",
-          treasures: ["石犀", "经穴漆人", "蜀锦提花机模型", "东汉画像砖"],
-          route: "先秦-南北朝→隋唐-明清→近世篇→民俗篇", bestTime: "春秋，另可观看特展",
-          address: "成都市青羊区小河街1号", reserveLink: "https://www.cdmuseum.com/", desc: "天府文化会客厅，皮影与木偶展有趣。",
-          subway: "地铁1/2号线天府广场站" },
-        { id: 12, name: "金沙遗址博物馆", nameEn: "Jinsha Site Museum", rank: "古蜀文明", city: "成都",
-          treasures: ["太阳神鸟金饰", "黄金面具", "十节玉琮", "铜立人"],
-          route: "遗迹馆→陈列馆→园林区→乌木林", bestTime: "3-5月樱花季，2月太阳节",
-          address: "成都市青羊区金沙遗址路2号", reserveLink: "https://www.jinshasitemuseum.com/", desc: "3000年前古蜀祭祀圣地，太阳神鸟中国文化遗产标志。",
-          subway: "地铁7号线金沙博物馆站" },
-        { id: 13, name: "辽宁省博物馆", nameEn: "Liaoning Provincial Museum", rank: "东北首席", city: "沈阳",
-          treasures: ["《簪花仕女图》", "《虢国夫人游春图》", "鸭形玻璃注", "青铜双面神像"],
-          route: "书画馆→古代辽宁→玉器馆→碑志展", bestTime: "夏秋季节，冬季馆内温暖",
-          address: "沈阳市浑南区智慧三街157号", reserveLink: "https://www.lnmuseum.com.cn/", desc: "清宫散佚书画重地，晋唐宋元名迹云集。",
-          subway: "地铁2号线省博物馆站" },
-        { id: 14, name: "天津自然博物馆", nameEn: "Tianjin Natural History Museum", rank: "自然奇境", city: "天津",
-          treasures: ["龙鸟化石", "巨型山东龙", "白鳍豚标本", "北疆博物院藏品"],
-          route: "家园·生命→家园·生态→探索中心", bestTime: "全年亲子适宜",
-          address: "天津市河西区友谊路31号", reserveLink: "https://www.tjnhm.com/", desc: "百年北疆，生命演化全景展示。",
-          subway: "地铁5/6号线文化中心站" },
-        { id: 15, name: "浙江省博物馆", nameEn: "Zhejiang Museum", rank: "亚太TOP16", city: "杭州",
-          treasures: ["玉琮王", "双鸟朝阳纹象牙碟形器", "富春山居图·剩山图", "伎乐铜屋"],
-          route: "武林馆(越地长歌)→孤山馆区→之江新馆", bestTime: "春秋，西湖孤山馆风景佳",
-          address: "杭州市西湖区孤山路25号(孤山馆)", reserveLink: "https://www.zhejiangmuseum.com/", desc: "河姆渡、良渚文化核心收藏。",
-          subway: "地铁1号线凤起路站" },
-        { id: 16, name: "三星堆博物馆", nameEn: "Sanxingdui Museum", rank: "Top11 全球(2024)", city: "广汉",
-          treasures: ["青铜大立人", "青铜神树", "黄金权杖", "纵目面具"],
-          route: "综合馆→青铜馆→修复馆→文物修复中心", bestTime: "四季皆可，避开国庆春节",
-          address: "德阳市广汉市向新路133号", reserveLink: "https://www.sxd.cn/", desc: "古蜀文明最神秘篇章，祭祀坑奇观。",
-          subway: "高铁广汉北站转车" },
-        { id: 17, name: "首都博物馆", nameEn: "Capital Museum", rank: "京韵记忆", city: "北京",
-          treasures: ["伯矩鬲", "克盉", "乾隆御制碑", "老北京民俗展品"],
-          route: "北京通史→燕地青铜→佛教艺术→京剧文物展", bestTime: "淡季冬季，馆内温暖舒适",
-          address: "北京市西城区复兴门外大街16号", reserveLink: "https://www.capitalmuseum.org.cn/", desc: "古都北京文化全景，民俗展览生动。",
-          subway: "地铁1号线木樨地站" },
-        { id: 18, name: "西安博物院", nameEn: "Xi'an Museum", rank: "小雁塔·唐韵", city: "西安",
-          treasures: ["董钦造像", "唐三彩腾空马", "秦封泥", "鎏金凤鸟钟"],
-          route: "古都西安→帝都万象→佛教造像→小雁塔园区", bestTime: "春季樱花与小雁塔相映",
-          address: "西安市碑林区友谊西路72号", reserveLink: "https://www.xabwy.com/", desc: "小雁塔旁，隋唐长安城格局微缩。",
-          subway: "地铁2/5号线南稍门站" },
-        { id: 19, name: "天一阁博物院", nameEn: "Tianyi Ge Museum", rank: "藏书圣地", city: "宁波",
-          treasures: ["明代科举录", "兰亭序神龙本刻石", "万卷藏书", "地方志"],
-          route: "宝书楼→东明草堂→范氏故居→千晋斋", bestTime: "4-5月或10月，书香雅韵",
-          address: "宁波市海曙区天一街10号", reserveLink: "http://www.tianyige.com.cn/", desc: "亚洲现存最古老私家藏书楼，书韵江南。",
-          subway: "地铁1号线西门口站" },
-        { id: 20, name: "自贡恐龙博物馆", nameEn: "Zigong Dinosaur Museum", rank: "恐龙王国", city: "自贡",
-          treasures: ["太白华阳龙", "天府峨眉龙", "和平永川龙", "恐龙足迹化石"],
-          route: "恐龙遗址厅→化石装架陈列→地质展厅→探秘馆", bestTime: "春秋气候宜人",
-          address: "自贡市大安区燊海井路4段268号", reserveLink: "https://www.zdm.cn/", desc: "世界三大恐龙博物馆之一，遗址现场震撼。",
-          subway: "自贡高铁站转公交" }
+      { id: 1, name: "故宫博物院", city: "北京", province: "北京市", levelTag: "国家一级博物馆", description: "世界文化遗产，明清两代皇家宫殿，馆藏文物180余万件，涵盖古代艺术珍品与宫廷珍宝。", mustSee: [{ title: "清明上河图", dynasty: "北宋", whyImportant: "中国十大传世名画之一" }, { title: "金瓯永固杯", dynasty: "清乾隆", whyImportant: "清代皇帝新年开笔仪式礼器" }], suggestedDurationHours: 4.5, openHours: "8:30-17:00", closingDay: "周一闭馆", ticketInfo: "旺季60元，需提前预约", address: "东城区景山前街4号", transport: [{ type:"subway", line:"1号线天安门东站", desc:"B口出" }], tips: ["务必提前7天预约","推荐租讲解器","不走回头路建议中轴线"], officialLink: "https://www.dpm.org.cn" },
+      { id: 2, name: "陕西历史博物馆", city: "西安", province: "陕西", levelTag: "国家一级博物馆", description: "古都明珠，华夏宝库，周秦汉唐文物精髓。", mustSee: [{ title: "镶金兽首玛瑙杯", dynasty: "唐", whyImportant: "唐代玉器孤品" },{ title: "鎏金舞马衔杯纹银壶", dynasty:"唐", whyImportant:"罕见的舞马形象" }], suggestedDurationHours: 3, openHours: "9:00-17:30", closingDay: "周一闭馆", ticketInfo: "免费需预约", address: "雁塔区小寨东路91号", transport: [{ type:"subway", line:"2号线小寨站", desc:"东行" }], tips: ["基本陈列免费","壁画馆另购票"], officialLink: "https://www.sxhm.com" },
+      { id: 3, name: "南京博物院", city: "南京", province: "江苏", levelTag: "国家一级博物馆", description: "一院六馆，江南文化与民国风情。", mustSee: [{ title: "竹林七贤砖画", dynasty: "南朝", whyImportant: "最早‘竹林七贤’图像" }], suggestedDurationHours: 3.5, openHours: "9:00-17:00", closingDay: "周一闭馆", ticketInfo: "免费预约", address: "玄武区中山东路321号", transport: [{ type:"subway", line:"2号线明故宫站" }], tips: ["历史馆必看","数字馆有趣"], officialLink: "https://www.njmuseum.com" },
+      { id: 4, name: "上海博物馆", city: "上海", province: "上海", levelTag: "国家一级博物馆", description: "青铜、陶瓷、书法绘画享誉海内外。", mustSee: [{ title: "大克鼎", dynasty: "西周", whyImportant: "青铜重器" }], suggestedDurationHours: 3, openHours: "9:00-17:00", closingDay: "周一闭馆", ticketInfo: "免费预约", address: "黄浦区人民大道201号", transport: [{ type:"subway", line:"1/2/8号线人民广场站" }], tips: ["特展值得看","南门进"], officialLink: "https://www.shanghaimuseum.net" },
+      { id: 5, name: "湖南省博物馆", city: "长沙", province: "湖南", levelTag: "国家一级博物馆", description: "马王堆汉墓惊世发现，辛追夫人千年不腐。", mustSee: [{ title: "素纱单衣", dynasty: "西汉", whyImportant: "最薄丝织品" },{ title:"T型帛画", dynasty:"西汉", whyImportant:"古代灵魂升天图" }], suggestedDurationHours: 3, openHours: "9:00-17:00", closingDay: "周一闭馆", ticketInfo: "免费预约", address: "开福区东风路50号", transport: [{ type:"subway", line:"6号线省博物馆站" }], tips: ["提前3天预约","辛追夫人遗体禁止拍照"], officialLink: "https://www.hnmuseum.com" },
+      { id: 6, name: "河南博物院", city: "郑州", province: "河南", levelTag: "国家一级博物馆", description: "华夏文明摇篮，贾湖骨笛、妇好鸮尊等九大镇院之宝。", mustSee: [{ title: "贾湖骨笛", dynasty:"新石器时代", whyImportant:"世界最早吹奏乐器" }], suggestedDurationHours: 2.5, openHours: "9:00-17:30", closingDay: "周一闭馆", ticketInfo: "免费预约", address: "金水区农业路8号", transport: [{ type:"subway", line:"2号线关虎屯站" }], tips: ["华夏古乐演出必听"], officialLink: "https://www.chnmus.net" },
+      { id: 7, name: "湖北省博物馆", city: "武汉", province: "湖北", levelTag: "国家一级博物馆", description: "越王勾践剑、曾侯乙编钟惊艳世界。", mustSee: [{ title: "越王勾践剑", dynasty:"春秋", whyImportant:"千年不锈" },{ title:"曾侯乙编钟", dynasty:"战国", whyImportant:"改写世界音乐史" }], suggestedDurationHours: 3, openHours: "9:00-17:00", closingDay: "周一闭馆", ticketInfo: "免费预约", address: "武昌区东湖路160号", transport: [{ type:"subway", line:"8号线省博湖北日报站" }], tips: ["编钟表演单独购票"], officialLink: "https://www.hbww.org" },
+      { id: 8, name: "浙江省博物馆", city: "杭州", province: "浙江", levelTag: "国家一级博物馆", description: "河姆渡文化、良渚玉器、雷峰塔文物。", mustSee: [{ title: "玉琮王", dynasty:"良渚文化", whyImportant:"良渚王权象征" }], suggestedDurationHours: 2.5, openHours: "9:00-17:00", closingDay: "周一闭馆", ticketInfo: "免费", address: "西湖区孤山路25号", transport: [{ type:"bus", line:"WE1314路" }], tips: ["孤山馆区清幽","武林馆区丰富"], officialLink: "" },
+      { id: 9, name: "辽宁省博物馆", city: "沈阳", province: "辽宁", levelTag: "国家一级博物馆", description: "书画与清宫散佚文物重镇。", mustSee: [{ title: "簪花仕女图", dynasty:"唐", whyImportant:"唐代仕女画典范" }], suggestedDurationHours: 2.5, openHours: "9:00-17:00", closingDay: "周一闭馆", ticketInfo: "免费预约", address: "浑南区智慧三街157号", transport: [{ type:"subway", line:"2号线省博物馆站" }], tips: ["书画厅必看"], officialLink: "https://www.lnmuseum.com" },
+      { id: 10, name: "四川博物院", city: "成都", province: "四川", levelTag: "国家一级博物馆", description: "巴蜀青铜器、张大千书画。", mustSee: [{ title: "象首耳卷体夔纹罍", dynasty:"西周", whyImportant:"巴蜀精粹" }], suggestedDurationHours: 2, openHours: "9:00-17:00", closingDay: "周一闭馆", ticketInfo: "免费预约", address: "青羊区浣花南路251号", transport: [{ type:"subway", line:"5号线青羊宫站" }], tips: ["旁边浣花溪公园"], officialLink: "https://www.scmuseum.cn" },
+      { id: 11, name: "台北故宫博物院", city: "台北", province: "台湾", levelTag: "综合", description: "翠玉白菜、肉形石、毛公鼎等稀世珍宝。", mustSee: [{ title: "翠玉白菜", dynasty:"清", whyImportant:"巧雕极品" }], suggestedDurationHours: 3.5, openHours: "9:00-17:00", closingDay: "全年无休", ticketInfo: "350新台币", address: "士林区至善路二段221号", transport: [{ type:"bus", line:"红30" }], tips: ["三宝排队人多","内部餐厅不错"], officialLink: "https://www.npm.gov.tw" },
+      { id: 12, name: "山西博物院", city: "太原", province: "山西", levelTag: "国家一级博物馆", description: "晋国霸业与佛教艺术。", mustSee: [{ title: "晋侯鸟尊", dynasty:"西周", whyImportant:"晋国图腾" }], suggestedDurationHours: 2.5, openHours: "9:00-17:00", closingDay: "周一闭馆", ticketInfo: "免费预约", address: "万柏林区滨河西路北段13号", transport: [{ type:"subway", line:"2号线博物院站" }], tips: ["青铜器惊艳"], officialLink: "" },
+      { id: 13, name: "广东省博物馆", city: "广州", province: "广东", levelTag: "国家一级博物馆", description: "潮州木雕、端砚与海上丝绸之路文物。", mustSee: [{ title: "金漆木雕大神龛", dynasty:"清", whyImportant:"木雕瑰宝" }], suggestedDurationHours: 2.5, openHours: "9:00-17:00", closingDay: "周一闭馆", ticketInfo: "免费预约", address: "天河区珠江东路2号", transport: [{ type:"subway", line:"APM线大剧院站" }], tips: ["海洋馆也值得看看"], officialLink: "https://www.gdmuseum.com" },
+      { id: 14, name: "甘肃省博物馆", city: "兰州", province: "甘肃", levelTag: "国家一级博物馆", description: "马踏飞燕与丝绸之路文物。", mustSee: [{ title: "铜奔马(马踏飞燕)", dynasty:"东汉", whyImportant:"中国旅游标志" }], suggestedDurationHours: 2, openHours: "9:00-17:00", closingDay: "周一闭馆", ticketInfo: "免费预约", address: "七里河区西津西路3号", transport: [{ type:"subway", line:"1号线七里河站" }], tips: ["丝路展厅最佳"], officialLink: "" },
+      { id: 15, name: "苏州博物馆", city: "苏州", province: "江苏", levelTag: "综合", description: "贝聿铭设计，江南园林与现代几何融合。", mustSee: [{ title: "秘色瓷莲花碗", dynasty:"五代", whyImportant:"越窑秘色瓷珍品" }], suggestedDurationHours: 2, openHours: "9:00-17:00", closingDay: "周一闭馆", ticketInfo: "免费预约", address: "姑苏区东北街204号", transport: [{ type:"subway", line:"4号线北寺塔站" }], tips: ["建筑本身就是艺术品","忠王府连游"], officialLink: "https://www.szmuseum.com" },
+      { id: 16, name: "三星堆博物馆", city: "广汉", province: "四川", levelTag: "专题", description: "古蜀文明，青铜神树、纵目面具震撼。", mustSee: [{ title: "青铜神树", dynasty:"商", whyImportant:"连接天地之树" },{ title:"青铜大立人", dynasty:"商" }], suggestedDurationHours: 3, openHours: "8:30-18:00", closingDay: "除夕闭馆", ticketInfo: "72元", address: "广汉市西安路133号", transport: [{ type:"bus", line:"广汉6路" }], tips: ["新馆爆赞","建议请讲解"], officialLink: "https://www.sxd.cn" },
+      { id: 17, name: "中国国家博物馆", city: "北京", province: "北京市", levelTag: "国家一级博物馆", description: "中华文物收藏量最丰富的博物馆之一，古代中国基本陈列。", mustSee: [{ title: "后母戊鼎", dynasty:"商", whyImportant:"最大青铜器" },{ title:"四羊方尊", dynasty:"商" }], suggestedDurationHours: 4, openHours: "9:00-17:30", closingDay: "周一闭馆", ticketInfo: "免费预约", address: "东城区东长安街16号", transport: [{ type:"subway", line:"1号线天安门东站" }], tips: ["至少预留4小时","严禁自拍杆"], officialLink: "https://www.chnmuseum.cn" },
+      { id: 18, name: "首都博物馆", city: "北京", province: "北京市", levelTag: "国家一级博物馆", description: "北京历史文化与民俗精粹。", mustSee: [{ title: "伯矩鬲", dynasty:"西周", whyImportant:"青铜艺术珍品" }], suggestedDurationHours: 2.5, openHours: "9:00-17:00", closingDay: "周一闭馆", ticketInfo: "免费预约", address: "西城区复兴门外大街16号", transport: [{ type:"subway", line:"1号线木樨地站" }], tips: ["京剧文物有意思"], officialLink: "" },
+      { id: 19, name: "敦煌研究院", city: "敦煌", province: "甘肃", levelTag: "专题", description: "莫高窟文物保护与数字化成果展示。", mustSee: [{ title: "藏经洞文献", dynasty:"唐", whyImportant:"佛教文献宝库" }], suggestedDurationHours: 2, openHours: "9:00-16:30", closingDay: "不定/以官方为准", ticketInfo: "需购买莫高窟门票", address: "敦煌市莫高窟景区", transport: [{ type:"shuttle", line:"数字展示中心大巴" }], tips: ["务必提前预约莫高窟票"], officialLink: "https://www.dha.ac.cn" },
+      { id: 20, name: "良渚博物院", city: "杭州", province: "浙江", levelTag: "专题", description: "良渚古城与玉文化，实证中华五千年文明。", mustSee: [{ title: "玉琮", dynasty:"良渚文化", whyImportant:"神徽之器" }], suggestedDurationHours: 2, openHours: "9:00-17:00", closingDay: "周一闭馆", ticketInfo: "免费", address: "余杭区美丽洲路1号", transport: [{ type:"subway", line:"2号线良渚站转公交" }], tips: ["建筑设计大师戴卫·奇普菲尔德"], officialLink: "" }
     ];
 
-    // 渲染博物馆列表
-    const museumListEl = document.getElementById('museumList');
-    const quickNav = document.getElementById('quickNav');
-
-    function renderMuseums() {
-        if (!museumListEl) return;
-        museumListEl.innerHTML = '';
+    // 生成路线 (动态聚合)
+    const getRoutes = () => {
+        return [
+            { name: "京城文脉 · 双馆巡礼", cities: ["北京"], museums: ["故宫博物院","中国国家博物馆"], days: 2 },
+            { name: "江浙沪雅集", cities: ["南京","上海","杭州"], museums: ["南京博物院","上海博物馆","浙江省博物馆","苏州博物馆"], days: 4 },
+            { name: "关中-中原华夏溯源", cities: ["西安","郑州"], museums: ["陕西历史博物馆","河南博物院"], days: 3 },
+            { name: "西南秘境古蜀之旅", cities: ["成都","广汉"], museums: ["四川博物院","三星堆博物馆"], days: 2 },
+            { name: "荆楚·湘江人文", cities: ["武汉","长沙"], museums: ["湖北省博物馆","湖南省博物馆"], days: 2.5 },
+            { name: "大湾区文化漫步", cities: ["广州"], museums: ["广东省博物馆"], days: 1 }
+        ];
+    };
+    
+    // localStorage 收藏
+    let stored = localStorage.getItem("favoriteMuseums");
+    let initialFav = stored ? JSON.parse(stored) : [];
+    
+    const App = () => {
+        const [museums, setMuseums] = React.useState(museumsData);
+        const [favorites, setFavorites] = React.useState(initialFav);
+        const [searchTerm, setSearchTerm] = React.useState("");
+        const [cityFilter, setCityFilter] = React.useState("");
+        const [closingFilter, setClosingFilter] = React.useState("");
+        const [durationFilter, setDurationFilter] = React.useState("");
+        const [ticketNeed, setTicketNeed] = React.useState("");
+        const [sortBy, setSortBy] = React.useState("default");
+        const [viewMode, setViewMode] = React.useState("card");
+        const [selectedMuseum, setSelectedMuseum] = React.useState(null);
         
-        museumsData.forEach((m, idx) => {
-            const card = document.createElement('div');
-            card.className = 'museum-card';
-            card.id = `museum-${m.id}`;
-            
-            // 构建卡片HTML
-            card.innerHTML = `
-                <div class="card-header">
-                    <div class="museum-name">
-                        ${idx+1}. ${m.name} 
-                        <small>${m.nameEn}</small>
-                        <span class="city-tag"><i class="fas fa-map-marker-alt"></i> ${m.city}</span>
-                    </div>
-                    <div class="rank"><i class="fas fa-trophy"></i> ${m.rank}</div>
-                </div>
-                <div class="card-body">
-                    <div class="left-info">
-                        <div class="info-section">
-                            <h3><i class="fas fa-gem"></i> 镇馆之宝 / 必看展品</h3>
-                            <div class="treasures">
-                                ${m.treasures.map(t => `<span class="treasure-item"><i class="fas fa-crown"></i> ${t}</span>`).join('')}
-                            </div>
-                        </div>
-                        <div class="info-section">
-                            <h3><i class="fas fa-map-signs"></i> 推荐参观路线</h3>
-                            <div class="route-text"><i class="fas fa-arrow-right" style="color:#b8872e"></i> ${m.route}</div>
-                            <div class="desc-text" style="margin-top:8px"><i class="fas fa-info-circle"></i> ${m.desc}</div>
-                        </div>
-                        <div class="info-section">
-                            <h3><i class="fas fa-ticket-alt"></i> 在线预约地址</h3>
-                            <a href="${m.reserveLink}" target="_blank" rel="noopener" class="btn-reserve"><i class="fas fa-calendar-check"></i> 官方预约通道 →</a>
-                        </div>
-                    </div>
-                    <div class="right-info">
-                        <div class="detail-row">
-                            <div class="detail-icon"><i class="fas fa-location-dot"></i></div>
-                            <div class="detail-content"><strong>地理位置</strong>${m.address}</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-icon"><i class="fas fa-subway"></i></div>
-                            <div class="detail-content"><strong>交通参考</strong>${m.subway || '公交可达，建议导航'}</div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-icon"><i class="fas fa-clock"></i></div>
-                            <div class="detail-content"><strong>最佳参观时间</strong><span class="best-time">${m.bestTime}</span></div>
-                        </div>
-                        <div class="detail-row">
-                            <div class="detail-icon"><i class="fas fa-lightbulb"></i></div>
-                            <div class="detail-content"><strong>贴心提示</strong> 大部分博物馆周一闭馆，请提前1-7天实名预约，旺季建议早晨第一批入园。</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            museumListEl.appendChild(card);
-        });
-    }
-
-    function renderNav() {
-        if (!quickNav) return;
-        quickNav.innerHTML = '';
-        museumsData.forEach(m => {
-            const btn = document.createElement('button');
-            btn.className = 'nav-btn';
-            // 显示简称，鼠标悬浮显示全名
-            let displayName = m.name;
-            if (displayName.length > 7) {
-                displayName = displayName.substring(0, 6) + '..';
+        React.useEffect(() => {
+            localStorage.setItem("favoriteMuseums", JSON.stringify(favorites));
+        }, [favorites]);
+        
+        const toggleFavorite = (id) => {
+            if(favorites.includes(id)) setFavorites(favorites.filter(fid=>fid!==id));
+            else setFavorites([...favorites, id]);
+        };
+        
+        const copyTransport = (museum) => {
+            let text = museum.transport.map(t=>`${t.type}:${t.line} ${t.desc||''}`).join('\n');
+            navigator.clipboard.writeText(text);
+            alert("交通信息已复制");
+        };
+        
+        // 筛选+搜索
+        let filtered = museums.filter(m => {
+            if(searchTerm && !(m.name.includes(searchTerm)||m.city.includes(searchTerm)||m.mustSee.some(ms=>ms.title.includes(searchTerm)))) return false;
+            if(cityFilter && m.city !== cityFilter) return false;
+            if(closingFilter) {
+                if(closingFilter === "周一闭馆" && !m.closingDay.includes("周一")) return false;
+                if(closingFilter === "无固定" && m.closingDay !== "无固定" && !m.closingDay.includes("以官方为准") && m.closingDay !== "除夕闭馆" && m.closingDay !== "全年无休") return false;
             }
-            btn.innerHTML = `<i class="fas fa-flag-checkered"></i> ${displayName}`;
-            btn.title = m.name; // 鼠标悬浮显示完整名称
-            btn.addEventListener('click', () => {
-                const target = document.getElementById(`museum-${m.id}`);
-                if(target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    // 高亮效果
-                    target.style.transition = 'box-shadow 0.2s';
-                    target.style.boxShadow = '0 0 0 3px #e3b23c, 0 12px 28px rgba(0,0,0,0.2)';
-                    setTimeout(() => {
-                        target.style.boxShadow = '';
-                    }, 1200);
-                }
-            });
-            quickNav.appendChild(btn);
+            if(durationFilter){
+                let dur = m.suggestedDurationHours;
+                if(durationFilter === "<=2h" && dur>2) return false;
+                if(durationFilter === "2-4h" && (dur<2||dur>4)) return false;
+                if(durationFilter === ">=4h" && dur<4) return false;
+            }
+            if(ticketNeed){
+                let need = ticketNeed === "需要预约";
+                if(need && !m.ticketInfo.includes("预约") && !m.ticketInfo.includes("需")) return false;
+                if(!need && (m.ticketInfo.includes("预约"))) return false;
+            }
+            return true;
         });
-    }
-
-    // 执行渲染
-    renderMuseums();
-    renderNav();
-
-    // 回到顶部按钮
-    const topBtn = document.getElementById('back2topBtn');
-    if (topBtn) {
-        topBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
-</script>
-</body>
-</html>
+        // 排序
+        if(sortBy === "duration") filtered.sort((a,b)=>a.suggestedDurationHours-b.suggestedDurationHours);
+        else if(sortBy === "city") filtered.sort((a,b)=>a.city.localeCompare(b.city));
+        else filtered.sort((a,b)=>a.id-b.id);
+        
+        const uniqueCities = [...new Map(museums.map(m=>[m.city,m.city])).values()];
+        
+        const routes = getRoutes();
+        return (
+            <div className="app-container">
+                <div className="hero">
+                    <h1><i className="fas fa-landmark"></i> 万水千山走遍 · 博物馆</h1>
+                    <p>中国TOP20博物馆深度导览，镇馆之宝·路线规划·收藏心仪之地</p>
+                </div>
+                <div className="stats-grid">
+                    <div className="stat-card"><div className="number">{museums.length}</div><div className="label">顶级场馆</div></div>
+                    <div className="stat-card"><div className="number">{uniqueCities.length}</div><div className="label">覆盖城市</div></div>
+                    <div className="stat-card"><div className="number">{routes.length}</div><div className="label">推荐路线</div></div>
+                    <div className="stat-card"><div className="number">{favorites.length}</div><div className="label">我的收藏</div></div>
+                </div>
+                <div className="toolbar">
+                    <div className="search-box"><i className="fas fa-search"></i><input placeholder="搜索博物馆/城市/镇馆之宝" value={searchTerm} onChange={e=>setSearchTerm(e.target.value)}/></div>
+                    <div className="filters">
+                        <select value={cityFilter} onChange={e=>setCityFilter(e.target.value)}><option value="">所有城市</option>{uniqueCities.map(c=><option key={c}>{c}</option>)}</select>
+                        <select value={closingFilter} onChange={e=>setClosingFilter(e.target.value)}><option value="">闭馆日</option><option>周一闭馆</option><option>无固定</option></select>
+                        <select value={durationFilter} onChange={e=>setDurationFilter(e.target.value)}><option value="">游玩时长</option><option value="<=2h">≤2小时</option><option value="2-4h">2-4小时</option><option value=">=4h">≥4小时</option></select>
+                        <select value={ticketNeed} onChange={e=>setTicketNeed(e.target.value)}><option value="">预约状态</option><option value="需要预约">需预约</option><option value="免费">免费无约</option></select>
+                        <select value={sortBy} onChange={e=>setSortBy(e.target.value)}><option value="default">默认排序</option><option value="duration">时长排序</option><option value="city">城市排序</option></select>
+                        <div className="view-toggle"><button className={viewMode==="card"?"active":""} onClick={()=>setViewMode("card")}><i className="fas fa-th"></i></button><button className={viewMode==="table"?"active":""} onClick={()=>setViewMode("table")}><i className="fas fa-list"></i></button></div>
+                    </div>
+                </div>
+                {viewMode === "card" ? <div className="cards-grid">{filtered.map(m=>(
+                    <div key={m.id} className="museum-card" onClick={()=>setSelectedMuseum(m)}>
+                        <div className="card-content"><div className="card-title">{m.name}<i className={`fas fa-heart heart ${favorites.includes(m.id)?'active':''}`} onClick={(e)=>{e.stopPropagation();toggleFavorite(m.id);}}></i></div>
+                        <div className="city-badge">{m.city} · {m.province}</div><div><i className="far fa-clock"></i> 建议时长 {m.suggestedDurationHours}h &nbsp; <i className="far fa-calendar-alt"></i> {m.closingDay}</div>
+                        <div className="treasure"><i className="fas fa-crown"></i> 镇馆之宝：{m.mustSee.map(t=>t.title).join("、")}</div>
+                        </div>
+                    </div>
+                ))}</div> : <div className="table-view"><table><thead><tr><th>名称</th><th>城市</th><th>时长</th><th>闭馆日</th><th>镇馆之宝</th><th>收藏</th></tr></thead><tbody>{filtered.map(m=><tr key={m.id}><td style={{cursor:"pointer",color:"#2B5E2F"}} onClick={()=>setSelectedMuseum(m)}>{m.name}</td><td>{m.city}</td><td>{m.suggestedDurationHours}h</td><td>{m.closingDay}</td><td>{m.mustSee[0]?.title}</td><td><i className={`fas fa-heart ${favorites.includes(m.id)?'active':''}`} style={{cursor:"pointer"}} onClick={()=>toggleFavorite(m.id)}></i></td></tr>)}</tbody></table></div>}
+                
+                <div className="route-section"><h3><i className="fas fa-route"></i> 经典路线推荐</h3><div style={{display:"flex",flexWrap:"wrap",gap:"1rem",marginTop:"1rem"}}>{routes.map(r=><div key={r.name
